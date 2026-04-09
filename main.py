@@ -189,32 +189,32 @@ print(secret_2)
 
 # Задание 2 Кобозев Якушенко
 k2, c2, t2, l2 = symbols("k2 c2 t2 l2")
-c_ost2 = 1000000
+c_ost2 = 2000000
 am_lst5 = []
 c_ost_lst5 = []
-for i in range(15):
+for i in range(16):
     Am = (c2 - l2) / t2
-    c_ost2 -= Am.subs({c2: 1000000, l2: 0, t2: 15})
-    am_lst5.append(round(Am.subs({c2: 1000000, l2: 0, t2: 15}), 2))
+    c_ost2 -= Am.subs({c2: 2000000, l2: 0, t2: 16})
+    am_lst5.append(round(Am.subs({c2: 2000000, l2: 0, t2: 16}), 2))
     c_ost_lst5.append(round(c_ost2, 2))
 print("Am_list5", am_lst5)
 print("c_ost_list5", c_ost_lst5)
 
 Aj2 = 0
-C_ost2 = 1000000
+C_ost2 = 2000000
 am_lst6 = []
 c_ost_lst6 = []
-for i in range(15): #Что это деалет? Ответ: создает цикл из 15 итераций
+for i in range(16): #Что это деалет? Ответ: создает цикл из 15 итераций
     Am = k2 * 1 / t2 * (c2 - Aj2)
-    C_ost2 -= Am.subs({k2: 2, t2: 15, c2: 1000000})
+    C_ost2 -= Am.subs({k2: 2, t2: 16, c2: 2000000})
     c_ost_lst6.append(round(C_ost2, 2))
     Aj2 += Am
-    am_lst6.append(round(Am.subs({k2: 2, t2: 15, c2: 1000000}), 2))
+    am_lst6.append(round(Am.subs({k2: 2, t2: 16, c2: 2000000}), 2))
 print("Am_lst6:", am_lst6)
 print("c_ost_lst6:", c_ost_lst6)
 # Создание таблиц
 print("")
-Y = range(1, 16)
+Y = range(1, 17)
 table3 = zip(Y, am_lst5, c_ost_lst5)
 table4 = zip(Y, am_lst6, c_ost_lst6)
 tframe3 = pd.DataFrame(table3, columns=["Y", "am_lst5", "c_ost_lst5"]) #Что это делает? Ответ: создает таблицу
@@ -236,8 +236,8 @@ plt.xlabel("Год")
 plt.savefig("picture14.png")
 
 vals3 = am_lst5
-labels = [str(x) for x in range(1, 16)]
-explode = [0.1] * 15 #Что это делает? Ответ: создание списка с отступами между частями круговой диаграммы 
+labels = [str(x) for x in range(1, 17)]
+explode = [0.1] * 16 #Что это делает? Ответ: создание списка с отступами между частями круговой диаграммы 
 fig, ax = plt.subplots()
 plt.pie(
     vals3,
@@ -252,7 +252,7 @@ ax.axis("equal")
 plt.savefig("picture15.png")
 
 vals4 = am_lst6
-labels2 = [str(x) for x in range(1, 16)]
+labels2 = [str(x) for x in range(1, 17)]
 fig, ax = plt.subplots()
 plt.pie(
     vals4,

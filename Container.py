@@ -37,4 +37,6 @@ def check_ip(raw_ip, good_ip):
 
 print(check_ip(raw_ip, good_ip))
 
+#Поменять эндпоинт и run на ''
+
 

@@ -8,7 +8,7 @@ for _ in range(200):
     random_ip = list(np.random.randint(0,256, size=4))
     good_ip = '.'.join([str(i) for i in random_ip])
     if ipaddress.ip_address(good_ip).is_global == True:
-        list_ip.append((good_ip, 'good_public_IP'))
+        list_ip.append((good_ip, 'Trust_IP'))
         good_valid_ip.append((good_ip, ipaddress.ip_address(good_ip).is_global))
 
 #Эталанные IP-адреса, будем прдполагать, что именно они и есть IP серверов Т-Банка
@@ -22,7 +22,7 @@ for _ in range(200):
     bad_ip = '.'.join([str(i) for i in random_ip])
     good_ip_set = set(df_good_valid_ip['IP'])
     if bad_ip not in good_ip_set:
-        list_ip.append((bad_ip, 'bad_public_IP'))
+        list_ip.append((bad_ip, 'Untrust_IP'))
         bad_valid_ip.append((bad_ip, ipaddress.ip_address(bad_ip).is_global))
 df2 = pd.DataFrame(bad_valid_ip, columns=['Bad_valid_IP', 'Is_global'])
 df_bad_valid_ip = df2[df2['Is_global'] == 1]

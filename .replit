@@ -21,3 +21,10 @@ expertMode = true
 [[ports]]
 localPort = 5904
 externalPort = 80
+
+[userenv]
+
+[userenv.shared]
+secret_Kobozev_4 = "135"
+secret_Kobozev_5 = "246"
+secret_Kobozev_6 = "111"

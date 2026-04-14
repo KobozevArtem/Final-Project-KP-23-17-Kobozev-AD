@@ -41,6 +41,7 @@ def check_ip(raw_ip, good_ip):
     else:
         final_flag = False
     return(('IP-адресс является валидным, глобальным и доверенным'), final_flag)
+#Генерируем 10 случайных IP-адресов и проверяем их
 for _ in range(10):
     row = random_IP()
     row_ip = row[0]

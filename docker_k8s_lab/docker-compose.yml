@@ -19,6 +19,8 @@ services:
     ports:
       - "5000:5000"
       - "8000:8000"
+    volumes:
+      - ./app/blocked_list.json:/app/blocked_list.json
     networks:
       - security_net
 

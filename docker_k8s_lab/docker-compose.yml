@@ -1,70 +1,169 @@
+# Версия синтаксиса Docker Compose
 version: "3.9"
 
+# Основной раздел со всеми сервисами проекта
 services:
+
+  # ==============================
+  # БЛОК 1. ВЕБ-СЕРВЕР NGINX
+  # ==============================
+
   nginx:
+    # Используется официальный образ Nginx
     image: nginx:latest
+
+    # Имя контейнера для удобной проверки через docker ps
     container_name: nginx_server
+
+    # Проброс портов:
+    # 8080 — порт на хосте / в Codespaces
+    # 80 — порт внутри контейнера Nginx
     ports:
       - "8080:80"
+
+    # Подключение локального файла конфигурации Nginx внутрь контейнера
+    # :ro означает режим "только чтение"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+
+    # Nginx запускается после приложения security_app
     depends_on:
       - security_app
+
+    # Подключение контейнера к общей сети проекта
     networks:
       - security_net
 
+
+  # ==============================
+  # БЛОК 2. ОСНОВНОЕ ПРИЛОЖЕНИЕ БЕЗОПАСНОСТИ
+  # ==============================
+
   security_app:
+    # Сборка контейнера выполняется из папки app,
+    # где находится Dockerfile приложения
     build: ./app
+
+    # Имя контейнера приложения
     container_name: security_app
+
+    # Проброс портов приложения:
+    # 5000 — Flask-интерфейс
+    # 8000 — сервер метрик Prometheus
     ports:
       - "5000:5000"
       - "8000:8000"
+
+    # Подключение файла журнала блокировок как volume
+    # Это нужно, чтобы blocked_list.json не сбрасывался после перезапуска контейнера
     volumes:
       - ./app/blocked_list.json:/app/blocked_list.json
+
+    # Подключение приложения к общей сети
     networks:
       - security_net
 
+
+  # ==============================
+  # БЛОК 3. БАЗА ДАННЫХ POSTGRESQL
+  # ==============================
+
   postgres_db:
+    # Используется официальный образ PostgreSQL версии 15
     image: postgres:15
+
+    # Имя контейнера базы данных
     container_name: postgres_db
+
+    # Переменные окружения для первичной настройки БД
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: security_db
+
+    # Проброс стандартного порта PostgreSQL
     ports:
       - "5432:5432"
+
+    # Подключение к общей сети проекта
     networks:
       - security_net
 
+
+  # ==============================
+  # БЛОК 4. PGADMIN ДЛЯ АДМИНИСТРИРОВАНИЯ БД
+  # ==============================
+
   pgadmin:
+    # Образ pgAdmin для управления PostgreSQL через браузер
     image: dpage/pgadmin4
+
+    # Имя контейнера pgAdmin
     container_name: pgadmin_server
+
+    # Данные для входа в pgAdmin
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@example.ru
       PGADMIN_DEFAULT_PASSWORD: admin
+
+    # Веб-интерфейс pgAdmin будет доступен на порту 5050
     ports:
       - "5050:80"
+
+    # Подключение к общей сети
     networks:
       - security_net
+
+
+  # ==============================
+  # БЛОК 5. PROMETHEUS ДЛЯ СБОРА МЕТРИК
+  # ==============================
 
   prometheus_server:
+    # Официальный образ Prometheus
     image: prom/prometheus:latest
+
+    # Имя контейнера Prometheus
     container_name: prometheus_server
+
+    # Подключение конфигурационного файла prometheus.yml внутрь контейнера
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
+
+    # Веб-интерфейс Prometheus будет доступен на порту 9090
     ports:
       - "9090:9090"
+
+    # Подключение к общей сети
     networks:
       - security_net
 
+
+  # ==============================
+  # БЛОК 6. GRAFANA ДЛЯ ВИЗУАЛИЗАЦИИ МЕТРИК
+  # ==============================
+
   grafana_server:
+    # Официальный образ Grafana
     image: grafana/grafana:latest
+
+    # Имя контейнера Grafana
     container_name: grafana_server
+
+    # Веб-интерфейс Grafana будет доступен на порту 3000
     ports:
       - "3000:3000"
+
+    # Подключение к общей сети
     networks:
       - security_net
+
+
+# ==============================
+# БЛОК 7. ОБЩАЯ СЕТЬ ПРОЕКТА
+# ==============================
 
 networks:
   security_net:
+    # bridge-сеть позволяет контейнерам обращаться друг к другу по именам сервисов
     driver: bridge
